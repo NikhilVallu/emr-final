@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+        --epic-blue: #005eb8;
+        --epic-dark-blue: #1a3c5e;
+        --epic-toolbar-bg: #2d3b4f;
+        --epic-gray-bg: #f0f0f0;
+        --epic-border: #cccccc;
+        --epic-text: #333333;
+    }
+
+    body {
+        @apply bg-[var(--epic-gray-bg)] text-[var(--epic-text)] antialiased;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+}
+
+.hyperspace-toolbar {
+    background: linear-gradient(to bottom, #3e4e63, #2d3b4f);
+}
+
+.hyperspace-tab {
+    @apply px-4 py-1 text-sm font-medium border-r border-gray-400 bg-gray-200 text-gray-700 cursor-pointer hover:bg-gray-100;
+}
+
+.hyperspace-tab.active {
+    @apply bg-white text-blue-800 border-t-4 border-t-red-600 border-b-0 font-bold;
+}
