@@ -25,6 +25,27 @@ const Dashboard = () => {
     return (
         <div className="space-y-6">
             {/* Top Stats Row */}
+            <div className="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-800">Welcome back, Dr. Smith</h2>
+                    <p className="text-sm text-gray-500">Here's what's happening today.</p>
+                </div>
+                <div className="flex space-x-3">
+                    <Link to="/appointments">
+                        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow flex items-center transition-colors">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Schedule Appointment
+                        </button>
+                    </Link>
+                    <Link to="/patients">
+                        <button className="bg-white hover:bg-gray-50 text-blue-600 border border-blue-600 font-bold py-2 px-4 rounded shadow-sm flex items-center transition-colors">
+                            <Users className="h-4 w-4 mr-2" />
+                            Add Patient
+                        </button>
+                    </Link>
+                </div>
+            </div>
+
             <div className="grid gap-4 md:grid-cols-3">
                 {stats.map((stat, index) => {
                     const Icon = stat.icon;

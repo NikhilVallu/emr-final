@@ -13,29 +13,51 @@ module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request for Appointments.');
 
     try {
-        const container = await getContainer();
-        let appointments = mockAppointments;
+        const container = await getContainer("patients"); // Ensure we use the patients container where we put mixed models
 
-        if (container) {
-            // Query DB for appointments if connection exists
-            // Assuming we store encounters as items with type 'appointment' or just use the whole container for simplicity
-            // For this demo, let's assume we fetch all items or mock DB logic
-            const { resources } = await container.items.query("SELECT * FROM c WHERE c.type = 'appointment'").fetchAll();
-            if (resources && resources.length > 0) {
-                appointments = resources;
-            } else {
-                // Seed DB if empty? Or just return empty. Keep mock for safety.
+        if (req.method === 'POST') {
+            // Create a new appointment
+            const newAppointment = req.body;
+            if (!newAppointment || !newAppointment.patient) {
+                context.res = { status: 400, body: { error: "Invalid appointment data. 'patient' is required." } };
+                return;
             }
-        }
 
-        context.res = {
-            body: appointments
-        };
+            // Assign a unique ID if one wasn't provided
+            newAppointment.id = newAppointment.id || new Date().getTime().toString();
+            newAppointment.type = 'appointment';
+            newAppointment.status = newAppointment.status || 'Scheduled';
+
+            if (container) {
+                await container.items.create(newAppointment);
+                context.res = { status: 201, body: newAppointment };
+            } else {
+                // If in mock mode
+                mockAppointments.push(newAppointment);
+                context.res = { status: 201, body: newAppointment };
+            }
+        } else {
+            // GET request
+            let appointments = mockAppointments;
+
+            if (container) {
+                // Query DB for appointments if connection exists
+                const { resources } = await container.items.query("SELECT * FROM c WHERE c.type = 'appointment'").fetchAll();
+                if (resources && resources.length > 0) {
+                    appointments = resources;
+                }
+            }
+
+            context.res = {
+                body: appointments
+            };
+        }
     } catch (error) {
-        context.log.error("Error fetching appointments:", error);
+        context.log.error("Error with appointments:", error);
         context.res = {
             status: 500,
-            body: "Error fetching appointments"
+            body: { error: "Error processing the appointment request." }
         };
     }
 }
+

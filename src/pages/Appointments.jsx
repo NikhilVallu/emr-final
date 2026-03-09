@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
+import { Input } from '../components/ui/Input';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '../components/ui/Dialog';
 import { Plus, Calendar as CalendarIcon, ChevronLeft, ChevronRight, Filter, Clock } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
@@ -13,25 +15,47 @@ const Appointments = () => {
     const [schedule, setSchedule] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchAppointments = async () => {
-            try {
-                const response = await fetch('/api/appointments');
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [newAppt, setNewAppt] = useState({
+        patient: '', mrn: '', time: '', type: 'Follow-up', complaint: '', provider: 'Dr. Smith'
+    });
+
+    const fetchAppointments = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('/api/appointments');
+            if (response.ok) {
                 const data = await response.json();
                 setSchedule(data);
-            } catch (error) {
-                console.error("Failed to fetch appointments:", error);
-                // Fallback or error handling
-            } finally {
-                setLoading(false);
             }
-        };
+        } catch (error) {
+            console.error("Failed to fetch appointments:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchAppointments();
     }, []);
+
+    const handleSaveAppointment = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch('/api/appointments', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newAppt)
+            });
+            if (response.ok) {
+                setIsAddModalOpen(false);
+                setNewAppt({ patient: '', mrn: '', time: '', type: 'Follow-up', complaint: '', provider: 'Dr. Smith' });
+                fetchAppointments(); // refresh
+            }
+        } catch (error) {
+            console.error("Error saving appointment:", error);
+        }
+    };
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -95,7 +119,7 @@ const Appointments = () => {
                         <Button variant="outline" size="sm" className="bg-white">
                             <Filter className="mr-2 h-4 w-4" /> Filter
                         </Button>
-                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white">
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 text-white" onClick={() => setIsAddModalOpen(true)}>
                             <Plus className="mr-2 h-4 w-4" /> Add Appt
                         </Button>
                     </div>
@@ -161,6 +185,57 @@ const Appointments = () => {
                     <span>No Show: 1</span>
                 </div>
             </div>
+
+            <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Schedule Appointment</DialogTitle>
+                        <DialogClose onClick={() => setIsAddModalOpen(false)} />
+                    </DialogHeader>
+                    <form onSubmit={handleSaveAppointment} className="space-y-4">
+                        <div>
+                            <label className="text-xs font-bold text-gray-700 uppercase">Patient Name</label>
+                            <Input
+                                required
+                                value={newAppt.patient}
+                                onChange={(e) => setNewAppt({ ...newAppt, patient: e.target.value })}
+                                placeholder="e.g. Smith, John"
+                            />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-xs font-bold text-gray-700 uppercase">Time</label>
+                                <Input
+                                    required
+                                    type="time"
+                                    value={newAppt.time}
+                                    onChange={(e) => setNewAppt({ ...newAppt, time: e.target.value })}
+                                />
+                            </div>
+                            <div>
+                                <label className="text-xs font-bold text-gray-700 uppercase">Provider</label>
+                                <Input
+                                    value={newAppt.provider}
+                                    onChange={(e) => setNewAppt({ ...newAppt, provider: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-xs font-bold text-gray-700 uppercase">Chief Complaint</label>
+                            <Input
+                                required
+                                value={newAppt.complaint}
+                                onChange={(e) => setNewAppt({ ...newAppt, complaint: e.target.value })}
+                                placeholder="e.g. Annual physical, knee pain..."
+                            />
+                        </div>
+                        <DialogFooter>
+                            <Button type="button" variant="outline" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+                            <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700">Schedule</Button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };
