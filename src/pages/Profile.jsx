@@ -70,7 +70,7 @@ const Profile = () => {
                             </div>
                             <div className="flex items-center justify-between p-2 hover:bg-gray-50 rounded">
                                 <span className="text-sm text-gray-700">Theme</span>
-                                <span className="text-sm font-bold text-blue-600 cursor-pointer">Hyperspace Light</span>
+                                <span className="text-sm font-bold text-blue-600 cursor-pointer">Nebula Light</span>
                             </div>
                         </CardContent>
                     </Card>

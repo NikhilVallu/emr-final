@@ -58,7 +58,7 @@ const Login = ({ onLogin }) => {
                     <div className="bg-blue-600 p-3 rounded-full shadow-lg mb-4">
                         <Activity className="h-8 w-8 text-white" />
                     </div>
-                    <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Hyperspace 2023</h1>
+                    <h1 className="text-2xl font-bold text-gray-800 tracking-tight">Nebula Medical</h1>
                     <p className="text-sm text-gray-500 mt-1">Secure Health System Access</p>
                 </div>
 

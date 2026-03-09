@@ -41,10 +41,10 @@ const Layout = ({ children }) => {
                 {/* Top Row: Branding, Global Search, User */}
                 <div className="flex items-center justify-between px-2 h-10 border-b border-gray-600/50">
                     <div className="flex items-center space-x-2">
-                        <div className="bg-red-600 p-1 rounded text-white font-bold text-xs tracking-wider">
-                            EPIC
+                        <div className="bg-blue-600 p-1 rounded text-white font-bold text-xs tracking-wider">
+                            NEBULA
                         </div>
-                        <span className="font-semibold tracking-tight text-gray-100">Hyperspace</span>
+                        <span className="font-semibold tracking-tight text-gray-100">Medical</span>
                         <span className="text-gray-400 text-xs">| Production</span>
                     </div>
 
@@ -85,13 +85,13 @@ const Layout = ({ children }) => {
                             )}
                         >
                             <Menu className="h-5 w-5 mb-0.5" />
-                            <span className="text-[10px]">Epic</span>
+                            <span className="text-[10px]">Nebula Menu</span>
                         </button>
 
                         {isMenuOpen && (
                             <div className="absolute top-full left-0 mt-1 w-56 bg-white rounded-md shadow-lg border border-gray-200 z-50 text-gray-800 py-1">
                                 <div className="px-4 py-2 border-b border-gray-100 bg-gray-50">
-                                    <p className="font-bold text-sm">Epic Menu</p>
+                                    <p className="font-bold text-sm">Nebula Menu</p>
                                 </div>
                                 <div className="py-1">
                                     <button className="w-full text-left px-4 py-2 text-sm hover:bg-blue-50 hover:text-blue-700 flex items-center">
