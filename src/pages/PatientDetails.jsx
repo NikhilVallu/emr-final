@@ -236,11 +236,20 @@ const PatientDetails = () => {
                                 <div className="flex-1 border border-gray-300 flex flex-col overflow-hidden">
                                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-700 uppercase">Subjective</label>
+                                            <label className="text-xs font-bold text-gray-700 uppercase">Subjective (S)</label>
                                             <textarea
                                                 className="w-full border border-gray-300 p-2 text-sm rounded focus:outline-none focus:border-blue-500 resize-none h-24"
-                                                placeholder="Patient complaints..."
+                                                placeholder="Patient complaints, symptoms, and medical history..."
                                                 defaultValue="Patient presents today for follow up of hypertension. Reports compliance with medications. No chest pain or shortness of breath."
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-gray-700 uppercase">Objective (O)</label>
+                                            <textarea
+                                                className="w-full border border-gray-300 p-2 text-sm rounded focus:outline-none focus:border-blue-500 resize-none h-24"
+                                                placeholder="Vitals, lab results, and physical exam findings..."
+                                                defaultValue="Vitals: BP 120/80, HR 72, Temp 98.6F, RR 16, O2 99%&#10;General: Well appearing, in no acute distress."
                                             />
                                         </div>
                                         {/* Physical Exam SmartForm */}
@@ -285,11 +294,20 @@ const PatientDetails = () => {
                                         </div>
 
                                         <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-700 uppercase">Assessment & Plan</label>
+                                            <label className="text-xs font-bold text-gray-700 uppercase">Assessment (A)</label>
                                             <textarea
-                                                className="w-full border border-gray-300 p-2 text-sm rounded focus:outline-none focus:border-blue-500 resize-none h-32"
-                                                placeholder="Assessment and Plan..."
-                                                defaultValue="1. Hypertension, well controlled.&#10;   - Continue current medications.&#10;   - Follow up in 3 months.&#10;&#10;2. Health Maintenance&#10;   - Flu shot given today."
+                                                className="w-full border border-gray-300 p-2 text-sm rounded focus:outline-none focus:border-blue-500 resize-none h-20"
+                                                placeholder="Diagnoses and medical reasoning..."
+                                                defaultValue="1. Essential Hypertension - well controlled.&#10;2. Health Maintenance."
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-bold text-gray-700 uppercase">Plan (P)</label>
+                                            <textarea
+                                                className="w-full border border-gray-300 p-2 text-sm rounded focus:outline-none focus:border-blue-500 resize-none h-24"
+                                                placeholder="Treatment, medications, and follow-up plan..."
+                                                defaultValue="- Continue current medications (Lisinopril).&#10;- Return to clinic in 3 months for follow-up.&#10;- Administered flu vaccine today."
                                             />
                                         </div>
                                     </div>
