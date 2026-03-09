@@ -7,15 +7,41 @@ const Login = ({ onLogin }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        // Simulate network delay
-        setTimeout(() => {
-            onLogin();
+        setErrorMsg('');
+        
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            // Parse response
+            let data;
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                data = await response.json();
+            } else {
+                data = { error: "Unexpected response from server" };
+            }
+            
+            if (response.ok) {
+                // Pass user context if needed, for now just call onLogin
+                onLogin(data?.user);
+            } else {
+                setErrorMsg(data?.error || 'Login failed');
+            }
+        } catch (error) {
+            console.error("Login error:", error);
+            setErrorMsg('Network error. Please try again.');
+        } finally {
             setIsLoading(false);
-        }, 800);
+        }
     };
 
     return (
@@ -36,7 +62,14 @@ const Login = ({ onLogin }) => {
                     <p className="text-sm text-gray-500 mt-1">Secure Health System Access</p>
                 </div>
 
+                {errorMsg && (
+                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm text-center font-semibold">
+                        {errorMsg}
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-6">
+
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">Username</label>
                         <Input
