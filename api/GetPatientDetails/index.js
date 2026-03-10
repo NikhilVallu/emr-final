@@ -82,7 +82,7 @@ module.exports = async function (context, req) {
         context.res = {
             status: 500,
             headers: { "Content-Type": "application/json" },
-            body: { error: "Error fetching patient details" }
+            body: { error: "Error fetching patient details", details: error.message || error.toString() }
         };
     }
 }
