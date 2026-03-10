@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -7,11 +7,28 @@ import { Plus, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from '../components/ui/Dialog';
 
 const Patients = () => {
-    const [patients, setPatients] = useState([
-        { id: 1, name: 'John Doe', age: 45, gender: 'Male', phone: '555-0123', lastVisit: '2023-10-15' },
-        { id: 2, name: 'Jane Smith', age: 32, gender: 'Female', phone: '555-0124', lastVisit: '2023-10-20' },
-        { id: 3, name: 'Robert Johnson', age: 58, gender: 'Male', phone: '555-0125', lastVisit: '2023-10-22' },
-    ]);
+    const [patients, setPatients] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchPatients();
+    }, []);
+
+    const fetchPatients = async () => {
+        try {
+            setIsLoading(true);
+            const response = await fetch('/api/patients');
+            if (response.ok) {
+                const data = await response.json();
+                setPatients(data);
+            }
+        } catch (error) {
+            console.error("Failed to load patients:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const [isAddPatientOpen, setIsAddPatientOpen] = useState(false);
     const [newPatient, setNewPatient] = useState({
         name: '',
@@ -24,23 +41,33 @@ const Patients = () => {
         lastVisit: new Date().toISOString().split('T')[0]
     });
 
-    const handleAddPatient = () => {
-        const patient = {
-            id: patients.length + 1,
-            ...newPatient
-        };
-        setPatients([...patients, patient]);
-        setIsAddPatientOpen(false);
-        setNewPatient({
-            name: '',
-            age: '',
-            gender: '',
-            phone: '',
-            insuranceProvider: '',
-            policyNumber: '',
-            groupNumber: '',
-            lastVisit: new Date().toISOString().split('T')[0]
-        });
+    const handleAddPatient = async () => {
+        try {
+            const response = await fetch('/api/patients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newPatient)
+            });
+            if (response.ok) {
+                const addedPatient = await response.json();
+                setPatients([...patients, addedPatient]);
+                setIsAddPatientOpen(false);
+                setNewPatient({
+                    name: '',
+                    age: '',
+                    gender: '',
+                    phone: '',
+                    insuranceProvider: '',
+                    policyNumber: '',
+                    groupNumber: '',
+                    lastVisit: new Date().toISOString().split('T')[0]
+                });
+            } else {
+                console.error("Failed to add patient");
+            }
+        } catch (error) {
+            console.error("Error adding patient:", error);
+        }
     };
 
     return (
