@@ -80,6 +80,9 @@ const Patients = () => {
                                 <TableCell>{patient.phone}</TableCell>
                                 <TableCell>{patient.lastVisit}</TableCell>
                                 <TableCell className="text-right">
+                                    <Link to={`/patients/${patient.id}?tab=Notes`} className="mr-2">
+                                        <Button variant="outline" size="sm" className="text-blue-600 border-blue-200 hover:bg-blue-50">Write Note</Button>
+                                    </Link>
                                     <Link to={`/patients/${patient.id}`}>
                                         <Button variant="ghost" size="sm">View</Button>
                                     </Link>

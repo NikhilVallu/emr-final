@@ -94,6 +94,9 @@ const Dashboard = () => {
                                             <Link to={`/patients/${chart.id}`} className="font-bold text-gray-800 hover:text-blue-700 hover:underline">
                                                 {chart.name}
                                             </Link>
+                                            <span className="ml-3 text-[10px] text-blue-600 border border-blue-200 bg-blue-50 px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Link to={`/patients/${chart.id}?tab=Notes`}>Write Note</Link>
+                                            </span>
                                             <div className="text-xs text-gray-500 flex items-center mt-0.5">
                                                 <span className="font-mono mr-2">{chart.mrn}</span>
                                                 <span className="w-1 h-1 bg-gray-300 rounded-full mr-2"></span>

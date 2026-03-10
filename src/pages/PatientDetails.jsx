@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
@@ -22,7 +22,10 @@ import { cn } from '../lib/utils';
 
 const PatientDetails = () => {
     const { id } = useParams();
-    const [activeTab, setActiveTab] = useState('Chart Review');
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const initialTab = queryParams.get('tab') || 'Chart Review';
+    const [activeTab, setActiveTab] = useState(initialTab);
     const [abnormalSystems, setAbnormalSystems] = useState({});
 
     const toggleAbnormal = (system) => {
