@@ -29,23 +29,26 @@ const mockPatients = {
 
 module.exports = async function (context, req) {
     context.log('JavaScript HTTP trigger function processed a request for Patient Details.');
-    const id = context.bindingData.id;
+    const rawId = context.bindingData.id;
+    const id = String(rawId);
 
     try {
         const container = await getContainer();
         let patient = mockPatients[id];
 
         if (container) {
+            const querySpec = {
+                query: "SELECT * from c WHERE c.id = @id",
+                parameters: [{ name: "@id", value: id }]
+            };
+            
             try {
-                // Cosmos DB throws a 404 error if the item doesn't exist
-                const { resource } = await container.item(id, id).read();
-                if (resource) {
-                    patient = resource;
+                const { resources } = await container.items.query(querySpec).fetchAll();
+                if (resources && resources.length > 0) {
+                    patient = resources[0];
                 }
             } catch (err) {
-                if (err.code !== 404) {
-                    throw err;
-                }
+                context.log.warn("Patient query fallback, error:", err.message);
             }
         }
 
