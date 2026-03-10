@@ -36,19 +36,30 @@ module.exports = async function (context, req) {
         let patient = mockPatients[id];
 
         if (container) {
-            const { resource } = await container.item(id, id).read();
-            if (resource) {
-                patient = resource;
+            try {
+                // Cosmos DB throws a 404 error if the item doesn't exist
+                const { resource } = await container.item(id, id).read();
+                if (resource) {
+                    patient = resource;
+                }
+            } catch (err) {
+                if (err.code !== 404) {
+                    throw err;
+                }
             }
         }
 
         if (patient) {
             context.res = {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
                 body: patient
             };
         } else {
             // If fetching an ID not in our mock data, generate a generic one
             context.res = {
+                status: 200,
+                headers: { "Content-Type": "application/json" },
                 body: {
                     id: id,
                     name: 'Guest Patient',
@@ -70,7 +81,8 @@ module.exports = async function (context, req) {
         context.log.error("Error fetching patient details:", error);
         context.res = {
             status: 500,
-            body: "Error fetching patient details"
+            headers: { "Content-Type": "application/json" },
+            body: { error: "Error fetching patient details" }
         };
     }
 }
